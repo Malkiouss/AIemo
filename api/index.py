@@ -112,11 +112,7 @@ def stats():
         'model_type': 'Random Forest' if model_loaded else 'Not loaded'
     })
 
-# Vercel serverless function handler
-def handler(request):
-    """Vercel serverless function handler"""
-    with app.request_context(request.environ):
-        return app.full_dispatch_request()
+
 
 # For local testing
 if __name__ == '__main__':
