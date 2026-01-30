@@ -250,15 +250,15 @@ function App() {
 
           {activeTab === 'emotions' && emotionData.length > 0 && (
             <div className="chart-container">
-              <ResponsiveContainer width="100%" height={400}>
-                <PieChart>
+              <ResponsiveContainer width="100%" height={460}>
+                <PieChart margin={{ top: 50}}>
                   <Pie
                     data={emotionData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={80}
-                    outerRadius={140}
-                    paddingAngle={2}
+                    innerRadius={90}
+                    outerRadius={150}
+                    paddingAngle={3}
                     dataKey="value"
                     label={renderCustomLabel}
                   >
