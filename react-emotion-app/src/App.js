@@ -2,6 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import './App.css';
 
+
+// At the top of the file
+const API_URL = process.env.REACT_APP_API_URL || '/api';
+
+
+
 const EMOTION_COLORS = {
   neutral: '#E8E8E8',
   stressed: '#FF6B6B',
@@ -23,25 +29,18 @@ function App() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [keystrokeCount, setKeystrokeCount] = useState(0);
   const [activeTab, setActiveTab] = useState('emotions');
+  const [textContent, setTextContent] = useState('');
 
   const pressTimes = React.useRef({});
+  const textareaRef = React.useRef(null);
 
   // Handle keydown
   const handleKeyDown = useCallback((e) => {
-    // Don't capture if typing in input fields
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-      return;
-    }
-    
     pressTimes.current[e.key] = performance.now() / 1000;
   }, []);
 
   // Handle keyup
   const handleKeyUp = useCallback((e) => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-      return;
-    }
-
     if (pressTimes.current[e.key]) {
       const releaseTime = performance.now() / 1000;
       const pressTime = pressTimes.current[e.key];
@@ -65,16 +64,28 @@ function App() {
     }
   }, []);
 
-  // Set up keyboard listeners
+  // Focus textarea on mount
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, []);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, [handleKeyDown, handleKeyUp]);
+  // Reset/Redo test function
+  const handleRedoTest = () => {
+    setKeystrokes([]);
+    setCurrentEmotion(null);
+    setEmotionData([]);
+    setKeystrokeCount(0);
+    setTextContent('');
+    setIsAnalyzing(false);
+    setActiveTab('emotions');
+    
+    // Refocus textarea after reset
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  };
 
   // Analyze emotion when we have enough keystrokes
   useEffect(() => {
@@ -87,7 +98,7 @@ function App() {
     setIsAnalyzing(true);
 
     try {
-      const response = await fetch('http://localhost:5000/predict', {
+      const response = await fetch(`${API_URL}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ keystrokes: keystrokes.slice(-50) }),
@@ -168,9 +179,23 @@ function App() {
           <div className="instruction-card">
             <h2>How it works</h2>
             <p>
-              Start typing naturally on your keyboard. Our AI analyzes your typing rhythm,
+              Start typing in the text box below. Our AI analyzes your typing rhythm,
               speed, and patterns to detect your emotional state in real-time.
             </p>
+            
+            <div className="typing-area">
+              <textarea
+                ref={textareaRef}
+                className="typing-textarea"
+                placeholder="Start typing here... Express your thoughts, write anything you want!"
+                value={textContent}
+                onChange={(e) => setTextContent(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onKeyUp={handleKeyUp}
+                rows={8}
+              />
+            </div>
+            
             <div className="status-indicator">
               <div className={`status-dot ${keystrokes.length >= 50 ? 'active' : ''}`}></div>
               <span className="status-text">
@@ -181,6 +206,15 @@ function App() {
                   : 'Active monitoring'}
               </span>
             </div>
+
+            {keystrokeCount > 0 && (
+              <div className="action-buttons">
+                <button className="redo-button" onClick={handleRedoTest}>
+                  <span className="button-icon">🔄</span>
+                  <span className="button-text">Redo Test</span>
+                </button>
+              </div>
+            )}
           </div>
 
           {currentEmotion && (

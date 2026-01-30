@@ -13,7 +13,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "vercel-build": "npm run build"
   },
   "eslintConfig": {
     "extends": [
@@ -36,4 +37,5 @@
   "devDependencies": {
     "ajv": "^7.2.4"
   }
+  
 }

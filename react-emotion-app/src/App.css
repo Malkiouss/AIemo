@@ -211,6 +211,56 @@ body {
   border: 1px solid var(--color-border);
 }
 
+/* Typing Area */
+.typing-area {
+  margin: 1.5rem 0;
+}
+
+.typing-textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: 1.25rem;
+  background: var(--color-surface-elevated);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-family: 'Manrope', sans-serif;
+  line-height: 1.6;
+  resize: vertical;
+  transition: all 0.3s ease;
+}
+
+.typing-textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+  background: var(--color-bg);
+}
+
+.typing-textarea::placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.typing-textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.typing-textarea::-webkit-scrollbar-track {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+.typing-textarea::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 4px;
+}
+
+.typing-textarea::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-hover);
+}
+
 .status-dot {
   width: 12px;
   height: 12px;
@@ -240,6 +290,51 @@ body {
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--color-text-secondary);
+}
+
+/* Action Buttons */
+.action-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.redo-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  background: var(--color-surface-elevated);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Manrope', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.redo-button:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+}
+
+.redo-button:active {
+  transform: translateY(0);
+}
+
+.button-icon {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.button-text {
+  font-size: 0.95rem;
 }
 
 /* Emotion Badge */
