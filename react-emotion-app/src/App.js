@@ -80,7 +80,7 @@ function App() {
     setTextContent('');
     setIsAnalyzing(false);
     setActiveTab('emotions');
-    
+
     // Refocus textarea after reset
     if (textareaRef.current) {
       textareaRef.current.focus();
@@ -88,13 +88,7 @@ function App() {
   };
 
   // Analyze emotion when we have enough keystrokes
-  useEffect(() => {
-    if (keystrokes.length >= 50) {
-      analyzeEmotion();
-    }
-  }, [keystrokes]);
-
-  const analyzeEmotion = async () => {
+  const analyzeEmotion = useCallback(async () => {
     setIsAnalyzing(true);
 
     try {
@@ -124,7 +118,14 @@ function App() {
     } finally {
       setIsAnalyzing(false);
     }
-  };
+  }, [keystrokes]);
+
+  // Analyze emotion when we have enough keystrokes
+  useEffect(() => {
+    if (keystrokes.length >= 50) {
+      analyzeEmotion();
+    }
+  }, [keystrokes, analyzeEmotion]);
 
   const renderCustomLabel = ({ cx, cy }) => {
     if (!currentEmotion) return null;
@@ -182,7 +183,7 @@ function App() {
               Start typing in the text box below. Our AI analyzes your typing rhythm,
               speed, and patterns to detect your emotional state in real-time.
             </p>
-            
+
             <div className="typing-area">
               <textarea
                 ref={textareaRef}
@@ -195,15 +196,15 @@ function App() {
                 rows={8}
               />
             </div>
-            
+
             <div className="status-indicator">
               <div className={`status-dot ${keystrokes.length >= 50 ? 'active' : ''}`}></div>
               <span className="status-text">
                 {keystrokes.length < 50
                   ? `Type ${50 - keystrokes.length} more keys to begin analysis`
                   : isAnalyzing
-                  ? 'Analyzing...'
-                  : 'Active monitoring'}
+                    ? 'Analyzing...'
+                    : 'Active monitoring'}
               </span>
             </div>
 
@@ -220,7 +221,7 @@ function App() {
           {currentEmotion && (
             <div className="insights-card">
               <h3>Current State</h3>
-              <div className="emotion-badge" style={{ 
+              <div className="emotion-badge" style={{
                 backgroundColor: EMOTION_COLORS[currentEmotion.emotion] + '20',
                 borderColor: EMOTION_COLORS[currentEmotion.emotion]
               }}>
@@ -282,11 +283,11 @@ function App() {
                   <span className="pattern-value">
                     {keystrokes.length >= 2
                       ? Math.round(
-                          (keystrokes.length /
-                            (keystrokes[keystrokes.length - 1].release_time -
-                              keystrokes[0].press_time)) *
-                            60
-                        )
+                        (keystrokes.length /
+                          (keystrokes[keystrokes.length - 1].release_time -
+                            keystrokes[0].press_time)) *
+                        60
+                      )
                       : 0}{' '}
                     WPM
                   </span>
