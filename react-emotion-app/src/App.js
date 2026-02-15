@@ -170,8 +170,10 @@ function App() {
           <p className="app-subtitle">Real-time emotion detection through typing patterns</p>
         </div>
         <div className="keystroke-counter">
-          <span className="counter-label">Keystrokes</span>
-          <span className="counter-value">{keystrokeCount}</span>
+          <span className="counter-label">{keystrokes.length >= 50 ? 'Ready' : 'Keys Needed'}</span>
+          <span className="counter-value">
+            {keystrokes.length >= 50 ? '✓' : Math.max(0, 50 - keystrokes.length)}
+          </span>
         </div>
       </header>
 
@@ -185,6 +187,14 @@ function App() {
             </p>
 
             <div className="typing-area">
+              <div className="textarea-counter">
+                <span className="counter-text">
+                  {keystrokes.length >= 50
+                    ? `✓ Analysis active (${keystrokeCount} total keystrokes)`
+                    : `${Math.max(0, 50 - keystrokes.length)} more keystrokes needed`
+                  }
+                </span>
+              </div>
               <textarea
                 ref={textareaRef}
                 className="typing-textarea"
@@ -251,7 +261,7 @@ function App() {
           {activeTab === 'emotions' && emotionData.length > 0 && (
             <div className="chart-container">
               <ResponsiveContainer width="100%" height={460}>
-                <PieChart margin={{ top: 50}}>
+                <PieChart margin={{ top: 50 }}>
                   <Pie
                     data={emotionData}
                     cx="50%"
